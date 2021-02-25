@@ -73,7 +73,7 @@ async def api_task():
                     else:
                         for btn in buttons:
                             if btn.entity_id == entity_id:
-                                btn.state = state['state'] == 'on'
+                                btn.state = state.get('state', 'unavailable') == 'on'
                                 await serial_queue.put(btn.display_data())
 
 
