@@ -7,6 +7,7 @@ import asyncio
 import websockets
 import aioserial
 import os
+import sys
 
 serial_queue = asyncio.Queue()
 api_queue = asyncio.Queue()
@@ -120,10 +121,10 @@ async def api_task():
             logging.exception(e)
             await asyncio.sleep(1)
 
-async def serial_task():
+async def serial_task(serial_path):
     while True:
         try:
-            s = aioserial.AioSerial(port='/dev/serial/by-id/usb-Arduino__www.arduino.cc__0043_852313632363511042C1-if00', baudrate=115200)
+            s = aioserial.AioSerial(port=serial_path, baudrate=115200)
             logging.info("Connected to serial")
 
             done = asyncio.Event()
@@ -169,5 +170,5 @@ logging.basicConfig(level=logging.INFO)
 
 loop = asyncio.get_event_loop()
 loop.create_task(api_task())
-loop.create_task(serial_task())
+loop.create_task(serial_task(sys.argv[1]))
 loop.run_forever()
